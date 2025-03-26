@@ -1,4 +1,7 @@
 package content;
 
-public class Podcast {
+import Account.User;
+
+public class Podcast extends Content {
+    private User owner;
 }
