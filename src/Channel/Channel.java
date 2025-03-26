@@ -1,7 +1,7 @@
 package Channel;
 
 import Account.User;
-import Account.playlist;
+import Account.Playlist;
 
 import java.util.ArrayList;
 
@@ -11,7 +11,7 @@ public class Channel {
     private String channelDescription;
     private String channelCover;
     private String channelOwner;
-    private ArrayList<playlist> playlists;
+    private ArrayList<Playlist> Playlists;
     private ArrayList<User> subscribers;
 
 }
