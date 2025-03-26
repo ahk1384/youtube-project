@@ -2,10 +2,10 @@ package Account;
 import Channel.Channel;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Locale;
+
 public class User extends Account {
     private int credit ;
-    playlist[] playlists ;
+    Playlist[] Playlists;
     private Channel channel ;
     private ArrayList<Channel> subscriptions ;
     private ArrayList<Category> likedCategory;
