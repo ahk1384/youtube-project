@@ -1,5 +1,4 @@
 package Account;
-import DataBase.DataBase;
 
 public class Report {
     private User reporter;
