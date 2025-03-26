@@ -1,4 +1,4 @@
 package Account;
 
-public class Admin {
+public class Admin extends Account {
 }
