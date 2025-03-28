@@ -1,8 +1,8 @@
-package DataBase;
+package Model.DataBase;
 
-import Account.Report;
-import Account.User;
-import content.Content;
+import Model.Account.User;
+import Model.Content.Content;
+import Model.Content.Report;
 
 import java.util.ArrayList;
 
@@ -27,5 +27,12 @@ public class DataBase {
     }
     public static void removeReport(Report report){
         reports.remove(report);
+    }
+    public static ArrayList<User> getUsers() {
+        return users;
+    }
+
+    public static User getUserById(int userId) {
+        return users.stream().filter(user -> user.getId() == userId).findFirst().orElse(null);
     }
 }
