@@ -1,7 +1,6 @@
 package Model.Content;
 
 import Model.Account.Category;
-import Model.Channel.comment;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -19,8 +18,18 @@ public class Content {
     private Category category;
     private String contentPath;
     private String cover;
-    private ArrayList<comment> comments;
+    private ArrayList<Comment> comments;
+    private int ownerId;
 
+    public int getChannelId() {
+        return channelId;
+    }
+
+    public void setChannelId(int channelId) {
+        this.channelId = channelId;
+    }
+
+    private int channelId;
     public int getContentId() {
         return contentId;
     }
@@ -65,7 +74,7 @@ public class Content {
         return cover;
     }
 
-    public ArrayList<comment> getComments() {
+    public ArrayList<Comment> getComments() {
         return comments;
     }
 
@@ -109,11 +118,15 @@ public class Content {
         this.cover = cover;
     }
 
-    public void setComments(ArrayList<comment> comments) {
+    public void setComments(ArrayList<Comment> comments) {
         this.comments = comments;
     }
 
-    public Content(String contentName, Boolean isExlusive, String contentDescription, int playTime, int viewCount, int likeCount, Category category, String contentPath, String cover) {
+    public int getOwnerId() {
+        return ownerId;
+    }
+
+    public Content(int ownerId,int channelId, String contentName, Boolean isExlusive, String contentDescription, int playTime, int viewCount, int likeCount, Category category, String contentPath, String cover) {
         this.contentId = idCounter++;
         this.contentName = contentName;
         this.isExlusive = isExlusive;
@@ -126,7 +139,11 @@ public class Content {
         this.contentPath = contentPath;
         this.cover = cover;
         this.comments = new ArrayList<>();
+        this.ownerId = ownerId;
+        this.channelId = channelId;
     }
+
+
 }
 
 
