@@ -9,6 +9,12 @@ public class Playlist {
     private int playlistId;
     private String playlistName;
     private ArrayList<Content> contents;
+    private final int playlistLimit = 10 ;
+
+    public int getPlaylistLimit() {
+        return playlistLimit;
+    }
+
     public Playlist(String playlistName) {
         this.playlistId = idCounter++;
         this.playlistName = playlistName;
