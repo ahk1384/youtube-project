@@ -6,8 +6,8 @@ import java.util.Date;
 
 public class Video extends Content {
     private String subtitle;
-    public Video(String contentName, Boolean isExlusive, String contentDescription, int playTime, int viewCount, int likeCount, Category category, String contentPath, String cover, String subtitle) {
-        super(contentName, isExlusive, contentDescription, playTime, viewCount, likeCount, category, contentPath, cover);
+    public Video(int ownerId ,int channelId ,String contentName, Boolean isExlusive, String contentDescription, int playTime, int viewCount, int likeCount, Category category, String contentPath, String cover, String subtitle) {
+        super(ownerId,channelId,contentName, isExlusive, contentDescription, playTime, viewCount, likeCount, category, contentPath, cover);
         this.subtitle = subtitle;
     }
     public String getSubtitle() {
@@ -24,8 +24,8 @@ enum Format {
 class ShortVideo extends Video {
     private String musicSource;
 
-    public ShortVideo(String contentName, Boolean isExlusive, String contentDescription, int playTime, int viewCount, int likeCount, Category category, String contentPath, String cover, String subtitle, String musicSource) {
-        super(contentName, isExlusive, contentDescription, playTime, viewCount, likeCount, category, contentPath, cover,subtitle);
+    public ShortVideo(int ownerId ,int channelId ,String contentName, Boolean isExlusive, String contentDescription, int playTime, int viewCount, int likeCount, Category category, String contentPath, String cover, String subtitle, String musicSource) {
+        super(ownerId,channelId,contentName, isExlusive, contentDescription, playTime, viewCount, likeCount, category, contentPath, cover,subtitle);
         this.musicSource = musicSource;
     }
     public String getMusicSource() {
@@ -39,8 +39,8 @@ class NormalVideo extends Video {
     private Quality quality;
     private Format format;
 
-    public NormalVideo(String contentName, Boolean isExlusive, String contentDescription, int playTime, int viewCount, int likeCount, Category category, String contentPath, String cover, String subtitle, Quality quality, Format format) {
-        super(contentName, isExlusive, contentDescription, playTime, viewCount, likeCount, category, contentPath, cover,subtitle);
+    public NormalVideo(int ownerId ,int channelId ,String contentName, Boolean isExlusive, String contentDescription, int playTime, int viewCount, int likeCount, Category category, String contentPath, String cover, String subtitle, Quality quality, Format format) {
+        super(ownerId,channelId,contentName, isExlusive, contentDescription, playTime, viewCount, likeCount, category, contentPath, cover,subtitle);
         this.quality = quality;
         this.format = format;
     }
@@ -65,8 +65,8 @@ class LiveStream extends Video {
     public void setStartTime(Date startTime) {
         this.startTime = startTime;
     }
-    public LiveStream(String contentName, Boolean isExlusive, String contentDescription, int playTime, int viewCount, int likeCount, Category category, String contentPath, String cover, String subtitle, Date startTime) {
-        super(contentName, isExlusive, contentDescription, playTime, viewCount, likeCount, category, contentPath, cover,subtitle);
+    public LiveStream(int ownerId ,int channelId ,String contentName, Boolean isExlusive, String contentDescription, int playTime, int viewCount, int likeCount, Category category, String contentPath, String cover, String subtitle, Date startTime) {
+        super(ownerId,channelId,contentName, isExlusive, contentDescription, playTime, viewCount, likeCount, category, contentPath, cover,subtitle);
         this.startTime = startTime;
     }
 }
