@@ -76,7 +76,7 @@ public class AdminController {
 
     public String acceptReport(Report report) {
         DataBaseController.getContents().remove(report.getContentReportedID());
-        return "Content with id :" + report.getContentReportedID() + " was removed and " +  banUser(report.getUserReportedID());;
+        return "Content with id :" + report.getContentReportedID() + " was removed and " +  banUser(report.getUserReportedID());
     }
 
     public String banUser(int id) {

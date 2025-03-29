@@ -11,17 +11,27 @@ public class Channel {
     private String channelName;
     private String channelDescription;
     private String channelCover;
-    private String channelOwner;
-    private ArrayList<Playlist> Playlists;
+    private int channelOwnerId;
+    private ArrayList<Playlist> playlists;
     private ArrayList<User> subscribers;
-    public Channel(String channelName, String channelDescription, String channelCover, String channelOwner) {
+    private ArrayList<Integer> contentId;
+    public Channel(String channelName, String channelDescription, String channelCover, int channelOwner) {
         this.channelId = idCounter++;
         this.channelName = channelName;
         this.channelDescription = channelDescription;
         this.channelCover = channelCover;
-        this.channelOwner = channelOwner;
+        this.channelOwnerId = channelOwner;
         this.subscribers = new ArrayList<>();
-        this.Playlists = new ArrayList<>();
+        this.playlists = new ArrayList<>();
+        this.contentId = new ArrayList<>();
+    }
+
+    public ArrayList<Integer> getContentId() {
+        return contentId;
+    }
+
+    public void setContentId(ArrayList<Integer> contentId) {
+        this.contentId = contentId;
     }
 
     public int getChannelId() {
@@ -52,20 +62,16 @@ public class Channel {
         this.channelCover = channelCover;
     }
 
-    public String getChannelOwner() {
-        return channelOwner;
-    }
-
-    public void setChannelOwner(String channelOwner) {
-        this.channelOwner = channelOwner;
+    public int getChannelOwnerId() {
+        return channelOwnerId;
     }
 
     public ArrayList<Playlist> getPlaylists() {
-        return Playlists;
+        return playlists;
     }
 
     public void setPlaylists(ArrayList<Playlist> playlists) {
-        Playlists = playlists;
+        this.playlists = playlists;
     }
 
     public ArrayList<User> getSubscribers() {
