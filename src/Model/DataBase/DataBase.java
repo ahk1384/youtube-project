@@ -1,6 +1,7 @@
 package Model.DataBase;
 
 import Model.Account.User;
+import Model.Channel.Channel;
 import Model.Content.Content;
 import Model.Content.Report;
 
@@ -10,29 +11,39 @@ public class DataBase {
     private static ArrayList<User> users = new ArrayList<>();
     private static ArrayList<Content> contents = new ArrayList<>();
     private static ArrayList<Report> reports = new ArrayList<>();
-    public static void addReport(Report report) {
-        reports.add(report);
+    private static ArrayList<Channel> channels = new ArrayList<>();
+    public static ArrayList<Report> getReports() {
+        return reports;
     }
-    public static void addContent(Content content){
-        contents.add(content);
+
+    public static ArrayList<Channel> getChannels() {
+        return channels;
     }
-    public static void addUser(User user){
-        users.add(user);
+
+    public static void setChannels(ArrayList<Channel> channels) {
+        DataBase.channels = channels;
     }
-    public static void removeUser(User user){
-        users.remove(user);
+
+    public static ArrayList<Content> getContents() {
+        return contents;
     }
-    public static void removeContent(Content content){
-        contents.remove(content);
+
+    public static void setReports(ArrayList<Report> reports) {
+        DataBase.reports = reports;
     }
-    public static void removeReport(Report report){
-        reports.remove(report);
+
+    public static ArrayList<User> getBanedUser() {
+        return banedUser;
     }
+
+    public static void setBanedUser(ArrayList<User> banedUser) {
+        DataBase.banedUser = banedUser;
+    }
+
+    private static ArrayList<User> banedUser = new ArrayList<>();
+
     public static ArrayList<User> getUsers() {
         return users;
     }
 
-    public static User getUserById(int userId) {
-        return users.stream().filter(user -> user.getId() == userId).findFirst().orElse(null);
-    }
 }
