@@ -1,9 +1,5 @@
 package Model.Account;
 
-import Model.DataBase.DataBase;
-
-import java.util.regex.Pattern;
-
 public class Admin extends Account {
     private static Admin instance;
 

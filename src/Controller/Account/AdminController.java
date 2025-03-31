@@ -4,13 +4,17 @@ import Controller.DataBase.DataBaseController;
 import Model.Account.Admin;
 import Model.Account.User;
 import Model.Channel.Channel;
-import Model.Content.Content;
 import Model.Content.Report;
 
 import java.util.regex.Pattern;
 
 public class AdminController {
     private static AdminController instance;
+    private Admin admin;
+
+    public AdminController() {
+    }
+
     public static AdminController getInstance() {
         if (instance == null) {
             instance = new AdminController();
@@ -18,14 +22,14 @@ public class AdminController {
         return instance;
     }
 
-    public AdminController() {
-    }
-
     public static AdminController getAdminController() {
         return instance;
     }
 
-    private Admin admin;
+    private static Boolean checkPasswordStrength(String password) {
+        String strongPasswordPattern = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$";
+        return Pattern.matches(strongPasswordPattern, password);
+    }
 
     public String login(String userName, String password) {
         if (admin == null) {
@@ -69,14 +73,9 @@ public class AdminController {
         return "Admin created";
     }
 
-    private static Boolean checkPasswordStrength(String password) {
-        String strongPasswordPattern = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$";
-        return Pattern.matches(strongPasswordPattern, password);
-    }
-
     public String acceptReport(Report report) {
         DataBaseController.getContents().remove(report.getContentReportedID());
-        return "Content with id :" + report.getContentReportedID() + " was removed and " +  banUser(report.getUserReportedID());
+        return "Content with id :" + report.getContentReportedID() + " was removed and " + banUser(report.getUserReportedID());
     }
 
     public String banUser(int id) {
@@ -89,39 +88,38 @@ public class AdminController {
         return "User : " + DataBaseController.getUserById(id).getUserName() + "unban successfully.";
     }
 
-    public String showAllUsersInfo(){
-        if (DataBaseController.getUsers().isEmpty()){
+    public String showAllUsersInfo() {
+        if (DataBaseController.getUsers().isEmpty()) {
             return "No user found. \n";
         }
         StringBuilder result = new StringBuilder();
-        for (User user : DataBaseController.getUsers()){
+        for (User user : DataBaseController.getUsers()) {
             result.append(showUserAccountInfo(user.getId()));
             result.append("---------------------------------\n");
         }
         return result.toString();
     }
 
-    public String showUserAccountInfo(int userId){
+    public String showUserAccountInfo(int userId) {
         User user = DataBaseController.getUserById(userId);
-        StringBuilder result = new StringBuilder("User info : \n");
-        result.append("User name : " + user.getUserName() + "\n");
-        result.append("Name : " + user.getName() + "\n");
-        result.append("Email : " + user.getEmail() + "\n");
-        result.append("Phone number : " + user.getPhoneNumber() + "\n");
-        result.append("Credit : " + user.getCredit() + "\n");
-        return result.toString();
+        String result = "User info : \n" + "User name : " + user.getUserName() + "\n" +
+                "Name : " + user.getName() + "\n" +
+                "Email : " + user.getEmail() + "\n" +
+                "Phone number : " + user.getPhoneNumber() + "\n" +
+                "Credit : " + user.getCredit() + "\n";
+        return result;
     }
 
-    public String showPopularContenetOnLike(){
+    public String showPopularContenetOnLike() {
         return "Most liked content : \n" + DataBaseController.getContents().stream().max((content1, content2) -> content1.getLikeCount() - content2.getLikeCount()).get().getContentName();
     }
 
-    public String showPopularChannelOnSubscribers(){
+    public String showPopularChannelOnSubscribers() {
         return "Most subscribed channel : \n" + DataBaseController.getChannels().stream().max((channel1, channel2) -> channel1.getSubscribers().size() - channel2.getSubscribers().size()).get().getChannelName();
     }
 
-    public String showChannelAndContents(){
-        if (DataBaseController.getChannels().isEmpty()){
+    public String showChannelAndContents() {
+        if (DataBaseController.getChannels().isEmpty()) {
             return "No channel found";
         }
         StringBuilder result = new StringBuilder("Channels info: \n");
@@ -130,10 +128,9 @@ public class AdminController {
             result.append("Channel owner : " + DataBaseController.getUserById(channel.getChannelOwnerId()).getUserName() + "\n");
             result.append("Channel subscribers : " + channel.getSubscribers().size() + "\n");
             result.append("Channel contents : \n");
-            if (channel.getContentId().isEmpty()){
+            if (channel.getContentId().isEmpty()) {
                 result.append("No content found\n");
-            }
-            else {
+            } else {
                 for (Integer id : channel.getContentId()) {
                     result.append("Content name : " + DataBaseController.getContentById(id).getContentName() + "\n");
                 }
