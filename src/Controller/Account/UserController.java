@@ -19,6 +19,11 @@ public class UserController {
     PlaylistController playlist = new PlaylistController();
     private NormalUser normalUser;
 
+    public UserController() {
+        likedCategory = new ArrayList<>();
+
+    }
+
     public static UserController getInstance() {
         if (instance == null) {
             instance = new UserController();
@@ -26,13 +31,25 @@ public class UserController {
         return instance;
     }
 
-    public UserController() {
-        likedCategory = new ArrayList<>();
-
+    public int getUserId() {
+        return currentUser.getId();
     }
 
     public static UserController getUserController() {
         return instance;
+    }
+
+    private static Boolean checkPasswordStrength(String password) {
+        String strongPasswordPattern = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$";
+        return Pattern.matches(strongPasswordPattern, password);
+    }
+
+    public ArrayList<Channel> getSubscriptions() {
+        return currentUser.getSubscriptions();
+    }
+
+    public ArrayList<Category> getLikedCategory() {
+        return likedCategory;
     }
 
     public String createAccount(String userName, String password, String name, String email, String phoneNumber) {
@@ -73,22 +90,13 @@ public class UserController {
         return "User created";
     }
 
-    private static Boolean checkPasswordStrength(String password) {
-        String strongPasswordPattern = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$";
-        if (Pattern.matches(strongPasswordPattern, password)) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
     public String login(String userName, String password) {
-        if (DataBaseController.getUsers().isEmpty() ) {
+        if (DataBaseController.getUsers().isEmpty()) {
             return "create an account first";
         }
         for (User user : DataBaseController.getUsers()) {
             if (user.getUserName().equals(userName) && user.getPassword().equals(password)) {
-                if(DataBaseController.getBanedUser().contains(user)){
+                if (DataBaseController.getBanedUser().contains(user)) {
                     return "You have ban";
                 }
                 currentUser = user;
@@ -96,6 +104,14 @@ public class UserController {
             }
         }
         return "Invalid username or password";
+    }
+
+    public String logout() {
+        if (currentUser == null) {
+            return "Login first";
+        }
+        currentUser = null;
+        return "Logout successful";
     }
 
     public String showUserInfo() {
@@ -208,16 +224,15 @@ public class UserController {
         return "Credit added";
     }
 
-    public String searchContentAndChannelName(String target){
-        StringBuilder result = new StringBuilder();
-        result.append("Content : \n");
-        result.append(DataBaseController.searchContent(target));
-        result.append("Channel : \n");
-        result.append(DataBaseController.searchChannelName(target));
-        return result.toString();
+    public String searchContentAndChannelName(String target) {
+        String result = "Content : \n" +
+                DataBaseController.searchContent(target) +
+                "Channel : \n" +
+                DataBaseController.searchChannelName(target);
+        return result;
     }
 
-    public String showLikedCategory(){
+    public String showLikedCategory() {
         StringBuilder result = new StringBuilder();
         for (Category category : likedCategory) {
             result.append(category.toString() + "\n");
@@ -270,18 +285,18 @@ public class UserController {
         return "Content disliked";
     }
 
-    public String subscribeChannel(int channelId){
-        if(currentUser == null){
+    public String subscribeChannel(int channelId) {
+        if (currentUser == null) {
             return "Login first";
         }
         Channel channel = DataBaseController.getChannelById(channelId);
-        if(channel == null){
+        if (channel == null) {
             return "Channel not found";
         }
-        if(channel.getChannelOwnerId() == currentUser.getId()){
+        if (channel.getChannelOwnerId() == currentUser.getId()) {
             return "You can't subscribe to your own channel";
         }
-        if(currentUser.getSubscriptions().contains(channel)){
+        if (currentUser.getSubscriptions().contains(channel)) {
             return "You already subscribed to this channel";
         }
         currentUser.getSubscriptions().add(channel);
@@ -289,7 +304,7 @@ public class UserController {
         return "You subscribed to this channel";
     }
 
-    public String showPlaylistNameAndContent(){
+    public String showPlaylistNameAndContent() {
         StringBuilder result = new StringBuilder();
         for (Playlist playlist : currentUser.getPlaylists()) {
             result.append("Playlist : ");
@@ -297,8 +312,7 @@ public class UserController {
             result.append("Contents : \n");
             if (playlist.getContents().isEmpty()) {
                 result.append("No content in this playlist\n");
-            }
-            else {
+            } else {
                 for (Content content : playlist.getContents()) {
                     result.append(content.toString() + "\n");
                 }
@@ -308,12 +322,11 @@ public class UserController {
         return result.toString();
     }
 
-    public String showLikedChannel(){
+    public String showLikedChannel() {
         StringBuilder result = new StringBuilder("Subscribed channel: \n");
-        if(currentUser.getSubscriptions().isEmpty()){
+        if (currentUser.getSubscriptions().isEmpty()) {
             result.append("No sbscribed channel");
-        }
-        else {
+        } else {
             for (Channel channel : currentUser.getSubscriptions()) {
                 result.append(channel.getChannelName() + "\n");
             }
@@ -321,15 +334,15 @@ public class UserController {
         return result.toString();
     }
 
-    public String setComment(int contentId,String description){
-        if(currentUser == null){
+    public String setComment(int contentId, String description) {
+        if (currentUser == null) {
             return "Login first";
         }
         Content content = DataBaseController.getContentById(contentId);
-        if(content == null){
+        if (content == null) {
             return "Content not found";
         }
-        if(content.getOwnerId() == currentUser.getId()){
+        if (content.getOwnerId() == currentUser.getId()) {
             return "You can't comment on your own content";
         }
         Comment comment = new Comment(currentUser.getId(), description);
@@ -337,7 +350,7 @@ public class UserController {
         return "comment saved successfully";
     }
 
-    public String addContentToPlaylist(int contentId , int playlistId){
+    public String addContentToPlaylist(int contentId, int playlistId) {
         if (currentUser instanceof PremiumUser) {
             Content content = DataBaseController.getContentById(contentId);
             if (content == null) {
@@ -364,19 +377,25 @@ public class UserController {
             if (playlist.getContents().contains(content)) {
                 return "Content already in this playlist";
             }
-            if(content instanceof Podcast){
-                if (playlist.getContents().size() <= playlist.getPlaylistLimit()){
+            if (content instanceof Podcast) {
+                if (playlist.getContents().size() <= playlist.getPlaylistLimit()) {
                     playlist.getContents().add(content);
                     return "Content added to playlist successfully.";
-                }
-                else{
+                } else {
                     return "You can't add more than 10 contents to a playlist.";
                 }
-            }
-            else {
+            } else {
                 return "You can only add podcasts to a playlist.";
             }
         }
         return "Content not added to playlist";
+    }
+
+    public ArrayList<Playlist> getPlaylists() {
+        return currentUser.getPlaylists();
+    }
+
+    public ArrayList<Integer> getWatchedContent() {
+        return currentUser.getWatchedContent();
     }
 }

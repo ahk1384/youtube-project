@@ -12,6 +12,22 @@ public class User extends Account {
     private ArrayList<Channel> subscriptions;
     private ArrayList<Category> likedCategory;
     private ArrayList<Integer> likedContent;
+    private ArrayList<Integer> watchedContent;
+
+    public User(String userName, String password, String name, String email, String phoneNumber, ArrayList<Category> likedCategory) {
+        this.id = idCounter++;
+        this.userName = userName;
+        this.password = password;
+        this.name = name;
+        this.email = email;
+        this.phoneNumber = phoneNumber;
+        this.likedCategory = likedCategory;
+        DataBaseController.addUser(this);
+        this.playlists = new ArrayList<>();
+        this.subscriptions = new ArrayList<>();
+        this.likedContent = new ArrayList<>();
+        this.watchedContent = new ArrayList<>();
+    }
 
     public ArrayList<Integer> getLikedContent() {
         return likedContent;
@@ -27,6 +43,10 @@ public class User extends Account {
 
     public void setCredit(int credit) {
         this.credit = credit;
+    }
+
+    public ArrayList<Integer> getWatchedContent() {
+        return watchedContent;
     }
 
     public ArrayList<Playlist> getPlaylists() {
@@ -56,19 +76,9 @@ public class User extends Account {
     public ArrayList<Category> getLikedCategory() {
         return likedCategory;
     }
+
     public void setLikedCategory(ArrayList<Category> likedCategory) {
         this.likedCategory = likedCategory;
-    }
-    public User(String userName, String password, String name, String email, String phoneNumber, ArrayList<Category> likedCategory) {
-        this.id = idCounter++;
-        this.userName = userName;
-        this.password = password;
-        this.name = name;
-        this.email = email;
-        this.phoneNumber = phoneNumber;
-        this.likedCategory = likedCategory;
-        DataBaseController.addUser(this);
-        this.playlists = new ArrayList<>();
     }
 
 
