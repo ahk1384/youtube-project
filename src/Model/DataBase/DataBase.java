@@ -8,12 +8,18 @@ import Model.Content.Report;
 import java.util.ArrayList;
 
 public class DataBase {
-    private static ArrayList<User> users = new ArrayList<>();
-    private static ArrayList<Content> contents = new ArrayList<>();
+    private static final ArrayList<User> users = new ArrayList<>();
+    private static final ArrayList<Content> contents = new ArrayList<>();
     private static ArrayList<Report> reports = new ArrayList<>();
     private static ArrayList<Channel> channels = new ArrayList<>();
+    private static ArrayList<User> banedUser = new ArrayList<>();
+
     public static ArrayList<Report> getReports() {
         return reports;
+    }
+
+    public static void setReports(ArrayList<Report> reports) {
+        DataBase.reports = reports;
     }
 
     public static ArrayList<Channel> getChannels() {
@@ -28,10 +34,6 @@ public class DataBase {
         return contents;
     }
 
-    public static void setReports(ArrayList<Report> reports) {
-        DataBase.reports = reports;
-    }
-
     public static ArrayList<User> getBanedUser() {
         return banedUser;
     }
@@ -39,8 +41,6 @@ public class DataBase {
     public static void setBanedUser(ArrayList<User> banedUser) {
         DataBase.banedUser = banedUser;
     }
-
-    private static ArrayList<User> banedUser = new ArrayList<>();
 
     public static ArrayList<User> getUsers() {
         return users;

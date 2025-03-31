@@ -1,17 +1,27 @@
 package Controller.DataBase;
 
+import Model.Account.Category;
+import Model.Account.Playlist;
 import Model.Account.User;
 import Model.Channel.Channel;
 import Model.Content.Content;
 import Model.Content.Report;
 import Model.DataBase.DataBase;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 
 public class DataBaseController {
+    private static final ArrayList<User> banedUser = new ArrayList<>();
+
     public static ArrayList<Report> getReports() {
         return DataBase.getReports();
     }
+
+    public static void setReports(ArrayList<Report> reports) {
+        DataBase.setReports(reports);
+    }
+
     public static ArrayList<Channel> getChannels() {
         return DataBase.getChannels();
     }
@@ -24,10 +34,6 @@ public class DataBaseController {
         return DataBase.getContents();
     }
 
-    public static void setReports(ArrayList<Report> reports) {
-        DataBase.setReports(reports);
-    }
-
     public static ArrayList<User> getBanedUser() {
         return DataBase.getBanedUser();
     }
@@ -36,8 +42,6 @@ public class DataBaseController {
         DataBase.setBanedUser(banedUser);
     }
 
-    private static ArrayList<User> banedUser = new ArrayList<>();
-
     public static ArrayList<User> getUsers() {
         return DataBase.getUsers();
     }
@@ -45,6 +49,7 @@ public class DataBaseController {
     public static User getUserById(int userId) {
         return DataBase.getUsers().stream().filter(user -> user.getId() == userId).findFirst().orElse(null);
     }
+
     public static Content getContentById(int contentId) {
         return DataBase.getContents().stream().filter(content -> content.getContentId() == contentId).findFirst().orElse(null);
     }
@@ -103,6 +108,46 @@ public class DataBaseController {
             return "Nothing Found in Channel";
         }
         return result.toString();
+    }
+
+    public static ArrayList<Content> getContentsByType(String contentType) {
+        ArrayList<Content> contents = new ArrayList<>();
+        for (Content content : DataBase.getContents()) {
+            if (content.getClass().getSimpleName().equals(contentType)) {
+                contents.add(content);
+            }
+        }
+        return contents;
+    }
+
+    public static ArrayList<Content> getContentsByCategory(Category category) {
+        ArrayList<Content> contents = new ArrayList<>();
+        for (Content content : DataBase.getContents()) {
+            if (content.getCategory().equals(category)) {
+                contents.add(content);
+            }
+        }
+        return contents;
+    }
+
+    public static ArrayList<Content> getContentsByDate(LocalDate startTime, LocalDate endTime) {
+        ArrayList<Content> contents = new ArrayList<>();
+        for (Content content : DataBase.getContents()) {
+            if (content.getUploadDate().isAfter(startTime) && content.getUploadDate().isBefore(endTime)) {
+                contents.add(content);
+            }
+        }
+        return contents;
+    }
+
+    public static ArrayList<Content> getContentsByDate(LocalDate endTime) {
+        ArrayList<Content> contents = new ArrayList<>();
+        for (Content content : DataBase.getContents()) {
+            if (content.getUploadDate().isBefore(endTime)) {
+                contents.add(content);
+            }
+        }
+        return contents;
     }
 
     public ArrayList<Content> ContentSorter(int type) {
