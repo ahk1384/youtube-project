@@ -1,14 +1,21 @@
 package Model.Content;
 
-import Model.Account.User;
-
 public class Report {
     private static int idCounter = 1;
-    private int reportId;
-    private int reporterId;
-    private int userReportedID;
-    private int contentReportedID;
+    private final int reportId;
+    private final int reporterId;
+    private final int userReportedID;
+    private final int contentReportedID;
     private String description;
+
+    public Report(int reporterId, int userReportedID, int contentReportedID, String description) {
+        this.reportId = idCounter++;
+        this.reporterId = reporterId;
+        this.userReportedID = userReportedID;
+        this.contentReportedID = contentReportedID;
+        this.description = description;
+    }
+
     public int getReporterId() {
         return reporterId;
     }
@@ -25,20 +32,12 @@ public class Report {
         return description;
     }
 
-    public int getReportId() {
-        return reportId;
-    }
-
     public void setDescription(String description) {
         this.description = description;
     }
 
-    public Report(int reporterId, int userReportedID, int contentReportedID, String description) {
-        this.reportId = idCounter++;
-        this.reporterId = reporterId;
-        this.userReportedID = userReportedID;
-        this.contentReportedID = contentReportedID;
-        this.description = description;
+    public int getReportId() {
+        return reportId;
     }
 
 }
