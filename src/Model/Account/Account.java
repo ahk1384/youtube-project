@@ -1,62 +1,64 @@
 package Model.Account;
 
 abstract public class Account {
-     protected static int idCounter = 1;
-     protected int id;
-     protected String userName;
-     protected String password;
-     protected String name;
-     protected String email;
-     protected String phoneNumber;
-     protected String profileCover;
-     public int getId() {
-          return id;
-     }
-     public String getUserName() {
-          return userName;
-     }
+    protected static int idCounter = 1;
+    protected int id;
+    protected String userName;
+    protected String password;
+    protected String name;
+    protected String email;
+    protected String phoneNumber;
+    protected String profileCover;
 
-     public void setUserName(String userName) {
-          this.userName = userName;
-     }
+    public int getId() {
+        return id;
+    }
 
-     public String getPassword() {
-          return password;
-     }
+    public String getUserName() {
+        return userName;
+    }
 
-     public void setPassword(String password) {
-          this.password = password;
-     }
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
 
-     public String getEmail() {
-          return email;
-     }
+    public String getPassword() {
+        return password;
+    }
 
-     public void setEmail(String email) {
-          this.email = email;
-     }
+    public void setPassword(String password) {
+        this.password = password;
+    }
 
-     public String getName() {
-          return name;
-     }
+    public String getEmail() {
+        return email;
+    }
 
-     public void setName(String name) {
-          this.name = name;
-     }
+    public void setEmail(String email) {
+        this.email = email;
+    }
 
-     public String getPhoneNumber() {
-          return phoneNumber;
-     }
+    public String getName() {
+        return name;
+    }
 
-     public void setPhoneNumber(String phoneNumber) {
-          this.phoneNumber = phoneNumber;
-     }
+    public void setName(String name) {
+        this.name = name;
+    }
 
-     public String getProfileCover() {
-          return profileCover;
-     }
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
 
-     public void setProfileCover(String profileCover) {
-          this.profileCover = profileCover;
-     }
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+
+    public String getProfileCover() {
+        return profileCover;
+    }
+
+    public void setProfileCover(String profileCover) {
+        this.profileCover = profileCover;
+    }
 }
