@@ -2,11 +2,15 @@ package Model.Account;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
 
 public class PremiumUser extends User {
     private LocalDate expirationDate;
     private SubscriptionPack subscriptionPack;
+
+    public PremiumUser(String userName, String password, String name, String email, String phoneNumber, ArrayList<Category> likedCategory) {
+        super(userName, password, name, email, phoneNumber, likedCategory);
+    }
+
     public SubscriptionPack getSubscriptionPack() {
         return subscriptionPack;
     }
@@ -14,12 +18,11 @@ public class PremiumUser extends User {
     public void setSubscriptionPack(SubscriptionPack subscriptionPack) {
         this.subscriptionPack = subscriptionPack;
     }
+
     public LocalDate getExpirationDate() {
         return expirationDate;
     }
-    public PremiumUser(String userName, String password, String name, String email, String phoneNumber, ArrayList<Category> likedCategory) {
-        super(userName, password, name, email, phoneNumber, likedCategory);
-    }
+
     public void setExpirationDate(LocalDate expirationDate) {
         this.expirationDate = expirationDate;
     }
