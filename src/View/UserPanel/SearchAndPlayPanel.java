@@ -44,7 +44,7 @@ public class SearchAndPlayPanel {
                 "Report - ContentId - Reason\n" +
                 "AddComment - ContentId - Comment\n" +
                 "AddToPlaylist - ContentId - PlaylistId\n" +
-                "Exit"+
+                "Type 'Exit' to return to the main menu."+
                 "\n================================================");
         while (true) {
             String sc = s.nextLine();

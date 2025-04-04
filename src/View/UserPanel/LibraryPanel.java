@@ -28,7 +28,7 @@ public class LibraryPanel {
                 "SelectPlaylist - PlaylistName\n" +
                 "CreatePlaylist - PlaylistName\n" +
                 "ShowSubscriptions \n" +
-                "Exit"+
+                "Type 'Exit' to return to the main menu."+
                 "\n================================================");
         while (true){
             String sc = s.nextLine();

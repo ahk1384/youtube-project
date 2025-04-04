@@ -1,6 +1,7 @@
 package View.UserPanel;
 
 import Controller.Account.UserController;
+import Controller.DataBase.DataBaseController;
 import Model.Account.User;
 
 import java.util.Scanner;
@@ -15,8 +16,13 @@ public class UserInfoPanel {
         return instance;
     }
     public void showUserInfo() {
-        User user = userController.showUserInfo();
-        System.out.println(user.toString());
+        if (userController.getCurrentUser()==null){
+            System.out.println("Login first.");
+        }
+        else {
+            User user = userController.showUserInfo();
+            System.out.println(user.toString());
+        }
     }
 
     public void run(Scanner s) {
@@ -25,7 +31,7 @@ public class UserInfoPanel {
                 "AccountInfo\n" +
                 "EditUserInfo - N\n" +
                 "EditUserInfo - P\n" +
-                "Exit"+
+                "Type 'Exit' to return to the main menu."+
                 "\n================================================");
 
         while (true) {
@@ -37,10 +43,16 @@ public class UserInfoPanel {
             }
             String[] commands = sc.split(" - ");
             if (commands[0].equals("AccountInfo")) {
-                User user = userController.showUserInfo();
-                System.out.println(user.toString());
+                if (userController.getCurrentUser()==null){
+                    System.out.println("Login first.");
+                }
+                else {
+                    User user = userController.showUserInfo();
+                    System.out.println(user.toString());
+                }
+
             }
-            else if (commands[0].equals("EditUserInfo")) {
+            else if (commands[0].equals("Edit")) {
                 if (commands[1].equals("N")) {
                     System.out.println(userController.editUserInfo(commands[2]));
                 } else if (commands[1].equals("P")) {

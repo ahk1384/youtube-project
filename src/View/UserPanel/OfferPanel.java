@@ -4,6 +4,7 @@ import Controller.Account.UserController;
 import Controller.Content.ContentController;
 import Controller.DataBase.DataBaseController;
 import Model.Account.PremiumUser;
+import Model.Channel.Channel;
 import Model.Content.Content;
 
 import java.util.Scanner;
@@ -35,9 +36,10 @@ public class OfferPanel {
     }
     public void run(Scanner s) {
         System.out.println("-----------------------------------------------\n" +
-                "Offer Panel : \n"+
+                "Suggestion Panel : \n"+
+                "ViewPopularContents \n" +
                 "ViewPopularChannels \n" +
-                "Exit"+
+                "Type 'Exit' to return to the main menu."+
                 "\n================================================");
         while (true) {
             String sc = s.nextLine();
@@ -47,9 +49,19 @@ public class OfferPanel {
                 return;
             }
             String[] commands = sc.split(" - ");
-            if (commands[0].equals("ViewPopularChannels")) {
-                System.out.println(showOffer());
-            } else {
+            if (commands[0].equals("ViewPopularContents")) {
+                if (contentController.getTopContents().isEmpty()){
+                    System.out.println("There is no content");
+                }
+                else{
+                    System.out.println(showOffer());
+                }
+            } else if(commands[0].equals("ViewPopularChannels")) {
+                for(Channel channel : contentController.topChannels())
+                {
+                    System.out.println(channel.toString());
+                }
+            }else {
                 System.out.println("Invalid command");
             }
         }
