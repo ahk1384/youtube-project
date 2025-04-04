@@ -7,8 +7,8 @@ public class PremiumUser extends User {
     private LocalDate expirationDate;
     private SubscriptionPack subscriptionPack;
 
-    public PremiumUser(String userName, String password, String name, String email, String phoneNumber, ArrayList<Category> likedCategory) {
-        super(userName, password, name, email, phoneNumber, likedCategory);
+    public PremiumUser(String userName, String password, String name, String email, String phoneNumber,String cover, ArrayList<Category> likedCategory) {
+        super(userName, password, name, email, phoneNumber,cover, likedCategory);
     }
 
     public SubscriptionPack getSubscriptionPack() {
