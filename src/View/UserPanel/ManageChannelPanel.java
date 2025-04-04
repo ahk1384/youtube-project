@@ -4,7 +4,9 @@ import Controller.Account.UserController;
 import Controller.Channel.ChannelController;
 import Controller.Content.ContentController;
 import Model.Account.Category;
+import Model.Account.Playlist;
 import Model.Account.User;
+import Model.Channel.Channel;
 import Model.Content.Content;
 import Model.Content.Format;
 import Model.Content.Quality;
@@ -42,13 +44,15 @@ public class ManageChannelPanel {
     public void run(Scanner s) {
         System.out.println("-----------------------------------------------\n" +
                 "Manage Channel Panel: \n" +
-                "AddContent - ContentId\n" +
-                "AddPlaylist - PlaylistId\n" +
-                "ShowChannelInfo \n" +
+                "AccountInfo \n" +
+                "Publish \n"+
+                "AddTOPlaylist - PlaylistId - ContentId\n" +
+                "ViewChannel \n" +
                 "EditChannelInfo - N\n" +
                 "EditChannelInfo - P\n" +
-                "ShowSubscribers \n" +
-                "Exit"+
+                "ShowChannelSubscribers \n" +
+                "ShowPlaylists \n" +
+                "Type 'Exit' to return to the main menu."+
                 "\n================================================");
         while (true){
             String sc = s.nextLine();
@@ -58,13 +62,7 @@ public class ManageChannelPanel {
                 break;
             }
             String[] commands = sc.split(" - ");
-            if (commands[0].equals("Login")){
-                System.out.println(userController.login(commands[1],commands[2]));
-            }
-            else if(commands[0].equals("Logout")){
-                System.out.println(userController.logout());
-            }
-            else if(commands[0].equals("Accountinfo")){
+            if(commands[0].equals("Accountinfo")){
                 User user = userController.showUserInfo();
                 System.out.println("Username: " + user.getUserName() + "\nName: " + user.getName() + "\nEmail: " + user.getEmail() + "\nPhone number: " + user.getPhoneNumber());
             }
@@ -104,8 +102,22 @@ public class ManageChannelPanel {
                 }
 
 
-            } else if (commands[0].equals("CreatePlaylist")) {
-                System.out.println(channelController.addPlaylist(commands[1]));
+            }
+            else if (commands[0].equals("AddToPlaylist")){
+                System.out.println(channelController.addToPlaylist(Integer.parseInt(commands[1]),Integer.parseInt(commands[2])));
+            }else if (commands[0].equals("ShowPlaylists")){
+                for (Playlist playlist : channelController.showPlaylists())
+                {
+                    System.out.println(playlist.toString());
+                }
+            }
+            else if (commands[0].equals("CreatePlaylist")) {
+                if (commands[1].equals("C")){
+                    System.out.println(channelController.addPlaylist(commands[2]));
+                }
+                else {
+                    System.out.println("invalid command");
+                }
             } else if (commands[0].equals("ViewChannel")) {
                 System.out.println(channelController.showChannelInfo(channelController.getId()).toString());
             } else if (commands[0].equals("ShowChannelContent")) {

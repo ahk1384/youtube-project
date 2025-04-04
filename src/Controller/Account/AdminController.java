@@ -77,8 +77,8 @@ public class AdminController {
     }
 
     public String acceptReport(Report report) {
-        DataBaseController.getContents().remove(report.getContentReportedID()-1);
-        channelController.getContentId().remove(report.getContentReportedID()-1);
+        DataBaseController.getContents().remove(DataBaseController.getContentById(report.getContentReportedID()));
+        channelController.getContentId().remove((Integer)report.getReportId());
         DataBaseController.getReports().remove(report);
         return "Content with id :" + report.getContentReportedID() + " was removed and " + banUser(report.getUserReportedID());
     }
@@ -95,8 +95,13 @@ public class AdminController {
     }
 
     public String unBanUser(int id) {
-        DataBaseController.getBanedUser().remove(DataBaseController.getUserById(id));
-        return "User : " + DataBaseController.getUserById(id).getUserName() + "unban successfully.";
+        if(DataBaseController.getBanedUser().contains(DataBaseController.getUserById(id))) {
+            DataBaseController.getBanedUser().remove(DataBaseController.getUserById(id));
+            return "User : " + DataBaseController.getUserById(id).getUserName() + "unban successfully.";
+        }
+        else {
+            return "this user not baned.";
+        }
     }
 
     public String showAllUsersInfo() {

@@ -1,5 +1,6 @@
 package Model.Content;
 
+import Controller.Content.ContentController;
 import Model.Account.Category;
 
 import java.time.LocalDate;
@@ -45,7 +46,7 @@ public class Content {
                 "\ncontentName : " + contentName + '\'' +
                 "\nisExlusive : " + isExlusive +
                 "\ncontentDescription : " + contentDescription +
-                "\nplayTime : " + playTime +
+                "\nplayTime : " + ContentController.getInstance().timeIntToString(playTime) +
                 "\nviewCount : " + viewCount +
                 "\nlikeCount : " + likeCount +
                 "\nuploadDate : " + uploadDate +

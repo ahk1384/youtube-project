@@ -26,13 +26,33 @@ public class UserPanel {
     private SearchAndPlayPanel searchPanel = SearchAndPlayPanel.getInstance();
     private OfferPanel offerPanel = OfferPanel.getInstance();
     public void run(Scanner s) {
-        System.out.println("-----------------------------------------------\n" +
-                "User Panel: \n" +
-                "UserInfo - N\n" +
-                "SearchAndPlay - N\n" +
-                "Offer - N\n" +
-                "Exit"+
-                "\n================================================");
+            System.out.println("================================================");
+            System.out.println("User Panel:");
+            System.out.println("Signup - username - email - firstName lastName - password - dateOfBirth - phoneNumber");
+            System.out.println("Login - username - password");
+            System.out.println("Logout");
+            System.out.println("FavouriteCategories - category1, category2, ...");
+            System.out.println("AccountInfo");
+            System.out.println("CreatePlaylist - U - playlistName");
+            System.out.println("Play - contentId");
+            System.out.println("Like - contentId");
+            System.out.println("Report - contentId - reportReason");
+            System.out.println("Search - query");
+            System.out.println("Subscribe - channelId");
+            System.out.println("ShowPlaylists");
+            System.out.println("ShowSubscriptions");
+            System.out.println("CreateChannel - channelName - channelDescription - privacy");
+            System.out.println("AddToPlaylist - playlistId - contentId");
+            System.out.println("ShowChannels");
+            System.out.println("ShowChannel - channelId");
+            System.out.println("ShowFavouritesCategory");
+            System.out.println("AddComment - contentId - commentText");
+            System.out.println("Sort - L | R | V (Likes, Ratings, Views)");
+            System.out.println("GetPremium - premiumType");
+            System.out.println("IncreaseCredit - amount");
+            System.out.println("Filter - C | D | V | P (Category, Date, Video, Podcast)");
+            System.out.println("Type 'Exit' to return to the main menu.");
+            System.out.println("================================================");
 
         while (true) {
             String sc = s.nextLine();
@@ -82,8 +102,6 @@ public class UserPanel {
                 System.out.println(userController.showPlaylistNameAndContent());
             } else if (command[0].equals("ShowSubscriptions")) {
                 System.out.println(userController.showSubscription());
-            }else if (command[0].equals("GetSuggestions")) {
-                System.out.println(offerPanel.showOffer());
             }else if (command[0].equals("CreateChannel")){
                 System.out.println(channelController.createChannel(command[1], command[2], command[3] ,userController.getUserId()));
             }
@@ -179,6 +197,9 @@ public class UserPanel {
                 }
             } else if (command[0].equals("GetPremium")) {
                 System.out.println(userController.buyOrExtendPremium(command[1]));
+            }
+            else if (command[0].equals("Edit")){
+
             }
             else if (command[0].equals("IncreaseCredit")) {
                 System.out.println(userController.addCredit(Integer.parseInt(command[1])));

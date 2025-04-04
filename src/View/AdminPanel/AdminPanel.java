@@ -26,8 +26,6 @@ public class AdminPanel {
     public void run(Scanner s){
         System.out.println("------------------------------------\n" +
                 "Admin Panel: \n" +
-                "1. Create Account \n"+
-                "Login \n" +
                 "AccountInfo \n" +
                 "ViewPopularContents \n"+
                 "Users \n" +

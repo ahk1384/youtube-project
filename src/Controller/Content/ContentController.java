@@ -227,7 +227,7 @@ public class ContentController {
         return topChannels;
     }
 
-    private ArrayList<Channel> topChannels() {
+    public ArrayList<Channel> topChannels() {
         ArrayList<Channel> topChannels;
         if (DataBaseController.getChannels().isEmpty()) {
             return new ArrayList<>();
@@ -236,7 +236,7 @@ public class ContentController {
         return topChannels;
     }
 
-    private ArrayList<Content> topContentForUser(Channel channel) {
+    public ArrayList<Content> topContentForUser(Channel channel) {
         ArrayList<Content> topContent;
         ArrayList<Content> contents = new ArrayList<>();
         if (DataBaseController.getContents().isEmpty()) {

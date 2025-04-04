@@ -16,7 +16,13 @@ public class Playlist {
         this.playlistName = playlistName;
         this.contents = new ArrayList<>();
     }
-
+    @Override
+    public String toString() {
+        return "Playlist:" +
+                "\nplaylistId : " + playlistId +
+                "\nplaylistName : " + playlistName +
+                "\ncontents : " + contents ;
+    }
     public int getPlaylistLimit() {
         return playlistLimit;
     }

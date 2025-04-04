@@ -20,10 +20,10 @@ public class ShowChannelsPanel {
     public void run(Scanner s) {
         System.out.println("-----------------------------------------------\n" +
                 "Show Channels Panel: \n" +
-                "ShowChannels"+
-                "ShowChannelInfo \n" +
+                "ShowChannels \n"+
+                "ShowChannel - ChannelId \n" +
                 "Subscribe - ChannelId\n" +
-                "Exit"+
+                "Type 'Exit' to return to the main menu."+
                 "\n================================================");
 
         while (true) {

@@ -17,7 +17,7 @@ public class ChannelController {
     Channel channel;
 
     private static ChannelController instance;
-
+    private PlaylistController playlistController = PlaylistController.getInstance();
     private ChannelController() {
     }
     public static ChannelController getInstance() {
@@ -75,11 +75,6 @@ public class ChannelController {
     }
 
     public ArrayList<Playlist> showPlaylists() {
-//        StringBuilder playlists = new StringBuilder();
-//        for (int i = 0; i < channel.getPlaylists().size(); i++) {
-//            playlists.append(channel.getPlaylists().get(i).getPlaylistName());
-//            playlists.append("\n");
-//        }
         return channel.getPlaylists();
     }
 
@@ -117,6 +112,18 @@ public class ChannelController {
             return channel.getSubscribers().remove(DataBaseController.getUserById(userId));
         }
         return false;
+    }
+    public String addToPlaylist(int playlistId, int contentId) {
+        Playlist playlist = channel.getPlaylistById(playlistId);
+        Content content = DataBaseController.getContentById(contentId);
+        if (playlist.getContents().contains(content)) {
+            return "Content already exists in the playlist. \n";
+        }
+        playlist.getContents().add(content);
+        return "Content added to the playlist. \n";
+    }
+    public Playlist showPlaylist(int playlistId) {
+        return channel.getPlaylistById(playlistId);
     }
 
     public Boolean editChannelInfo(String name) {
