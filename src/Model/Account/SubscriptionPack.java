@@ -1,7 +1,7 @@
 package Model.Account;
 
 public enum SubscriptionPack {
-    Gold(180, 14), Silver(60, 9), Bronze(30, 5);
+    GOLD(180, 14), SILVER(60, 9), BRONZE(30, 5);
     private final int price;
     private final int allowedDays;
 
