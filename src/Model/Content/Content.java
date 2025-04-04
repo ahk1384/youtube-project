@@ -38,6 +38,19 @@ public class Content {
         this.ownerId = ownerId;
         this.channelId = channelId;
     }
+    @Override
+    public String toString() {
+        return "ContentInfo:\n" +
+                "contentId :" + contentId +
+                "\ncontentName : " + contentName + '\'' +
+                "\nisExlusive : " + isExlusive +
+                "\ncontentDescription : " + contentDescription +
+                "\nplayTime : " + playTime +
+                "\nviewCount : " + viewCount +
+                "\nlikeCount : " + likeCount +
+                "\nuploadDate : " + uploadDate +
+                "\ncategory : " + category;
+    }
 
     public int getChannelId() {
         return channelId;

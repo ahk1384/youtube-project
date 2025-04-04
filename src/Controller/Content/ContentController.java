@@ -3,10 +3,7 @@ package Controller.Content;
 import Controller.Account.UserController;
 import Controller.Channel.ChannelController;
 import Controller.DataBase.DataBaseController;
-import Model.Account.Category;
-import Model.Account.NormalUser;
-import Model.Account.Playlist;
-import Model.Account.User;
+import Model.Account.*;
 import Model.Channel.Channel;
 import Model.Content.*;
 
@@ -17,10 +14,13 @@ public class ContentController {
 
     private static ContentController instance;
     private Content content;
-
+    private UserController userController = UserController.getInstance();
     public ContentController() {
     }
 
+    public Content getContentById(int contentId) {
+        return DataBaseController.getContentById(contentId);
+    }
     public static ContentController getInstance() {
         if (instance == null) {
             instance = new ContentController();
@@ -34,6 +34,7 @@ public class ContentController {
         if (user instanceof NormalUser && content.getExlusive()) {
             return null;
         }
+        content.setViewCount(content.getViewCount() + 1);
         return DataBaseController.getContentById(contentId);
     }
 
@@ -42,9 +43,26 @@ public class ContentController {
     }
 
     public ArrayList<Content> filterContent(String ContentType) {
-        return DataBaseController.getContentsByType(ContentType);
+        ArrayList<Content> contents = new ArrayList<>();
+        for (Content content : DataBaseController.getContents()) {
+            if (content.getClass().getSimpleName().equals(ContentType)) {
+                contents.add(content);
+            }
+        }
+        return contents;
+
     }
 
+    public String timeIntToString(int time) {
+        int hour = time / 3600;
+        int minute = (time % 3600) / 60;
+        int second = time % 60;
+        return String.valueOf(hour)+":"+String.valueOf(minute)+":"+String.valueOf(second);
+    }
+
+    public Content showContentInfo(int contentId) {
+        return DataBaseController.getContentById(contentId);
+    }
     public ArrayList<Content> filterContent(LocalDate startTime, LocalDate endTime) {
         return DataBaseController.getContentsByDate(startTime, endTime);
     }
@@ -179,7 +197,27 @@ public class ContentController {
         }
         return topContent;
     }
-
+    public ArrayList<Content> getTopContents(){
+        ArrayList<Content> topContent = new ArrayList<>();
+        int allCounter = 0;
+        int counter = 0;
+        for (Channel channel : topChannels()) {
+            for (Content content : topContent()) {
+                if (counter < 2 && allCounter < 10) {
+                    topContent.add(content);
+                    counter++;
+                    allCounter++;
+                } else {
+                    counter = 0;
+                    break;
+                }
+            }
+            if (allCounter >= 10) {
+                return topContent;
+            }
+        }
+        return topContent;
+    }
     private ArrayList<Channel> topChannelsForUser() {
         ArrayList<Channel> topChannels;
         if (UserController.getInstance().getSubscriptions().isEmpty()){
@@ -261,6 +299,24 @@ public class ContentController {
         if (!watchLater.isEmpty()) {
             addToListWithoutDuplicates(offeredContent, watchLater);
         }
+        if (offeredContent.size() < 10) {
+            int counter = 0;
+            for (Content content : DataBaseController.getContents()) {
+                if (counter < 10) {
+                    offeredContent.add(content);
+                }
+            }
+        }
         return offeredContent;
+    }
+
+    public ArrayList<Content> sortedContents(int type) {
+        StringBuilder result = new StringBuilder();
+        ArrayList<Content> content = DataBaseController.contentSorter(type);
+        return content;
+    }
+
+    public ArrayList<Content> getContents() {
+        return DataBaseController.getContents();
     }
 }
