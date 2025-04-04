@@ -1,15 +1,18 @@
 package Controller.Account;
 
+import Controller.Channel.ChannelController;
 import Controller.DataBase.DataBaseController;
 import Model.Account.Admin;
 import Model.Account.User;
 import Model.Channel.Channel;
 import Model.Content.Report;
 
+import javax.xml.crypto.Data;
 import java.util.regex.Pattern;
 
 public class AdminController {
     private static AdminController instance;
+    private ChannelController channelController = ChannelController.getInstance();
     private Admin admin;
 
     public AdminController() {
@@ -74,13 +77,21 @@ public class AdminController {
     }
 
     public String acceptReport(Report report) {
-        DataBaseController.getContents().remove(report.getContentReportedID());
+        DataBaseController.getContents().remove(report.getContentReportedID()-1);
+        channelController.getContentId().remove(report.getContentReportedID()-1);
+        DataBaseController.getReports().remove(report);
         return "Content with id :" + report.getContentReportedID() + " was removed and " + banUser(report.getUserReportedID());
     }
 
+    public String AccountInfo(){
+        return "UserName : " + admin.getUserName() + "\n" +
+                "Name : " + admin.getName() + "\n" +
+                "Email : " + admin.getEmail() + "\n" +
+                "Phone Number : " + admin.getPhoneNumber() + "\n";
+    }
     public String banUser(int id) {
         DataBaseController.getBanedUser().add(DataBaseController.getUserById(id));
-        return "User : " + DataBaseController.getUserById(id).getUserName() + "ban successfully.";
+        return "User : " + DataBaseController.getUserById(id).getUserName() + " ban successfully.";
     }
 
     public String unBanUser(int id) {
