@@ -1,5 +1,6 @@
 package Model.Channel;
 
+import Controller.DataBase.DataBaseController;
 import Model.Account.Playlist;
 import Model.Account.User;
 
@@ -16,6 +17,7 @@ public class Channel {
     private ArrayList<Playlist> playlists;
     private ArrayList<User> subscribers;
     private ArrayList<Integer> contentId;
+
     public Channel(String channelName, String channelDescription, String channelCover, int channelOwner) {
         Playlist allContent = new Playlist("AllContent");
         allContentPlaylistId = allContent.getPlaylistId();
@@ -28,6 +30,40 @@ public class Channel {
         this.playlists = new ArrayList<>();
         playlists.add(allContent);
         this.contentId = new ArrayList<>();
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder playlistsString = new StringBuilder();
+        StringBuilder subscribersString = new StringBuilder();
+        StringBuilder contentString = new StringBuilder();
+        if (contentId.isEmpty()) {
+            contentString.append("No content");
+        } else {
+            for (Integer contentId : contentId) {
+                contentString.append(DataBaseController.getContentById(contentId)).append(", ");
+            }
+        }
+        if (subscribers.isEmpty()) {
+            subscribersString.append("No subscribers");
+        } else {
+            for (User subscriber : subscribers) {
+                subscribersString.append(subscriber.getUserName()).append(", ");
+            }
+        }
+        if (playlists.isEmpty()) {
+            playlistsString.append("No playlists");
+        } else {
+            for (Playlist playlist : playlists) {
+                playlistsString.append(playlist.getPlaylistName()).append(", ");
+            }
+        }
+        return "ChannelInfo:" +
+                "\nchannelId :" + channelId +
+                "\nchannelName : " + channelName +
+                "\nchannelDescription : " + channelDescription +
+                "\nplaylists : " + playlistsString +
+                "\nsubscribers : " + subscribersString;
     }
 
     public int getAllContentPlaylistId() {
@@ -93,5 +129,6 @@ public class Channel {
     public Playlist getPlaylistById(int id) {
         return playlists.stream().filter(playlist -> playlist.getPlaylistId() == id).findFirst().orElse(null);
     }
+
 
 }

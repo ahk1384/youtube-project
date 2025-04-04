@@ -4,6 +4,7 @@ import Controller.Account.PlaylistController;
 import Controller.Account.UserController;
 import Controller.DataBase.DataBaseController;
 import Model.Account.Playlist;
+import Model.Account.User;
 import Model.Channel.Channel;
 import Model.Content.Content;
 import Model.Content.LiveStream;
@@ -65,31 +66,32 @@ public class ChannelController {
         return true;
     }
 
-    public String showSubscribers() {
-        StringBuilder subscribers = new StringBuilder();
+    public ArrayList<User> showSubscribers() {
+        ArrayList<User> subscribers = new ArrayList<>();
         for (int i = 0; i < channel.getSubscribers().size(); i++) {
-            subscribers.append(channel.getSubscribers().get(i).getUserName());
-            subscribers.append("\n");
+            subscribers.add(channel.getSubscribers().get(i));
         }
-        return subscribers.toString();
+        return subscribers;
     }
 
-    public String showPlaylists() {
-        StringBuilder playlists = new StringBuilder();
-        for (int i = 0; i < channel.getPlaylists().size(); i++) {
-            playlists.append(channel.getPlaylists().get(i).getPlaylistName());
-            playlists.append("\n");
-        }
-        return playlists.toString();
+    public ArrayList<Playlist> showPlaylists() {
+//        StringBuilder playlists = new StringBuilder();
+//        for (int i = 0; i < channel.getPlaylists().size(); i++) {
+//            playlists.append(channel.getPlaylists().get(i).getPlaylistName());
+//            playlists.append("\n");
+//        }
+        return channel.getPlaylists();
     }
 
-    public String showContent() {
-        StringBuilder content = new StringBuilder();
+    public ArrayList<Content> showContent() {
+        ArrayList<Content> content = new ArrayList<>();
+        if (channel.getContentId().isEmpty()) {
+            return null;
+        }
         for (int i = 0; i < channel.getContentId().size(); i++) {
-            content.append(DataBaseController.getContentById(channel.getContentId().get(i)).getContentName());
-            content.append("\n");
+            content.add(DataBaseController.getContentById(channel.getContentId().get(i)));
         }
-        return content.toString();
+        return content;
     }
 
     public Boolean addSubscriber(int userId) {
@@ -99,11 +101,15 @@ public class ChannelController {
         return channel.getSubscribers().add(DataBaseController.getUserById(userId));
     }
 
-    public String showChannelInfo() {
-        return "Channel Name: " + channel.getChannelName() + "\n" +
-                "Channel Description: " + channel.getChannelDescription() + "\n" +
-                "Channel Owner: " + DataBaseController.getUserById(channel.getChannelOwnerId()).getUserName() + "\n" +
-                "Channel Cover: " + channel.getChannelCover() + "\n";
+    public Channel showChannelInfo(int channelId) {
+        Channel channel = DataBaseController.getChannelById(channelId);
+        return channel;
+    }
+    public ArrayList<Channel> showChannelsInfo() {
+        if (DataBaseController.getChannels().isEmpty()) {
+            return null;
+        }
+        return DataBaseController.getChannels();
     }
 
     public Boolean removeSubscriber(int userId) {
@@ -113,13 +119,14 @@ public class ChannelController {
         return false;
     }
 
-    public Boolean editChannelInfo(String name, String description, String cover) {
+    public Boolean editChannelInfo(String name) {
         channel.setChannelName(name);
-        channel.setChannelDescription(description);
-        channel.setChannelCover(cover);
         return true;
     }
-
+    public ArrayList<Integer> getContentId()
+    {
+        return channel.getContentId();
+    }
 
     public int getId() {
         return channel.getChannelId();
