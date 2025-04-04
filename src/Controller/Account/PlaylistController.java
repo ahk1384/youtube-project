@@ -5,6 +5,8 @@ import Model.Account.Playlist;
 import Model.Account.User;
 import Model.Content.Content;
 
+import java.util.ArrayList;
+
 public class PlaylistController {
     private static PlaylistController instance;
     private Playlist currentPlaylist;
@@ -23,6 +25,11 @@ public class PlaylistController {
         User user = DataBaseController.getUserById(userid);
         return user.getPlaylists().stream().filter(playlist -> playlist.getPlaylistId() == id).findFirst().orElse(null);
 
+    }
+
+    public ArrayList<Playlist> getPlaylists(int userid) {
+        User user = DataBaseController.getUserById(userid);
+        return user.getPlaylists();
     }
 
     public Playlist createPlaylist(String playlistName) {
