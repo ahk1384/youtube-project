@@ -150,7 +150,7 @@ public class DataBaseController {
         return contents;
     }
 
-    public ArrayList<Content> ContentSorter(int type) {
+    public static ArrayList<Content> contentSorter(int type) {
         // 1 for like count
         // 2 for view count
         ArrayList<Content> content = DataBaseController.getContents();
@@ -167,4 +167,7 @@ public class DataBaseController {
         return content;
     }
 
+    public static Report getReportById(int reportId) {
+        return DataBase.getReports().stream().filter(report -> report.getReportId() == reportId).findFirst().orElse(null);
+    }
 }
