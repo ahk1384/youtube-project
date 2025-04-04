@@ -5,7 +5,6 @@ import Model.Account.*;
 import Model.Channel.Channel;
 import Model.Content.Comment;
 import Model.Content.Content;
-import Model.Content.Podcast;
 import Model.Content.Report;
 
 import java.time.LocalDate;
@@ -15,6 +14,7 @@ import java.util.regex.Pattern;
 public class UserController {
     private static UserController instance;
     private static User currentUser;
+    private static User nowRegistredUser;
     private static ArrayList<Category> likedCategory;
     PlaylistController playlist = new PlaylistController();
     private NormalUser normalUser;
@@ -52,14 +52,20 @@ public class UserController {
         return likedCategory;
     }
 
-    public String createAccount(String userName, String password, String name, String email, String phoneNumber) {
+
+    public Boolean addLikedCategory(ArrayList<Category> likedCategory) {
+        nowRegistredUser.setLikedCategory(likedCategory);
+        return true;
+    }
+
+    public String createAccount(String userName, String password, String name, String email, String phoneNumber, String cover) {
         String result = checkSignUpInputs(userName, password, name, email, phoneNumber);
         if (!result.equals("User created")) {
             return result;
         }
-        User userCreated = new NormalUser(userName, password, name, email, phoneNumber, likedCategory);
-        userCreated.getPlaylists().add(playlist.createPlaylist("Liked"));
-        userCreated.getPlaylists().add(playlist.createPlaylist("Watch Later"));
+        nowRegistredUser = new NormalUser(userName, password, name, email, phoneNumber, cover, likedCategory);
+        nowRegistredUser.getPlaylists().add(playlist.createPlaylist("Liked"));
+        nowRegistredUser.getPlaylists().add(playlist.createPlaylist("Watch Later"));
         return "User created";
     }
 
@@ -100,6 +106,7 @@ public class UserController {
                     return "You have ban";
                 }
                 currentUser = user;
+                nowRegistredUser = user;
                 return "Login successful";
             }
         }
@@ -114,26 +121,32 @@ public class UserController {
         return "Logout successful";
     }
 
-    public String showUserInfo() {
+    public User showUserInfo() {
         if (currentUser == null) {
-            return "Login first";
+            return null;
         }
-        String result = "Username: " + currentUser.getUserName() + "\nName: " + currentUser.getName() + "\nEmail: " + currentUser.getEmail() + "\nPhone number: " + currentUser.getPhoneNumber();
-        return result;
+        return currentUser;
     }
 
-    public String editUserInfo(String userName, String name, String email, String phoneNumber) {
+    public User showUserInfo(int userId) {
+        User user = DataBaseController.getUserById(userId);
+        return user;
+    }
+
+    public String editUserInfo(String name) {
         if (currentUser == null) {
             return "Login first";
         }
-        currentUser.setUserName(userName);
         currentUser.setName(name);
-        currentUser.setEmail(email);
-        currentUser.setPhoneNumber(phoneNumber);
         return "User info updated";
     }
 
-    public String changePassword(String oldPassword, String newPassword) {
+    public String getUserName(int id) {
+        return DataBaseController.getUserById(id).getUserName();
+    }
+
+    public String changePassword(String newPassword) {
+        String oldPassword = currentUser.getPassword();
         if (currentUser == null) {
             return "Login first";
         }
@@ -167,46 +180,82 @@ public class UserController {
         return "playlist not created";
     }
 
+    public String buyOrExtendPremium(String subscriptionPack) {
+        SubscriptionPack subscription = SubscriptionPack.valueOf(subscriptionPack.toUpperCase());
+        if (currentUser == null) {
+            return "Login first";
+        }
+        if (currentUser instanceof PremiumUser) {
+            if (currentUser.getCredit() >= subscription.getPrice()) {
+                currentUser.setCredit(currentUser.getCredit() - subscription.getPrice());
+                ((PremiumUser) currentUser).setExpirationDate(((PremiumUser) currentUser).getExpirationDate().plusDays(subscription.getAllowedDays()));
+                ((PremiumUser) currentUser).setSubscriptionPack(subscription);
+                return "Your " + subscriptionPack + " subscription is activated";
+            }
+            return "You don't have enough credit";
+        } else if (currentUser instanceof NormalUser) {
+            if (currentUser.getCredit() >= subscription.getPrice()) {
+                PremiumUser premiumUser = new PremiumUser(currentUser.getUserName(), currentUser.getPassword(), currentUser.getName(), currentUser.getEmail(), currentUser.getPhoneNumber(), currentUser.getCover(), currentUser.getLikedCategory());
+                premiumUser.setCredit(currentUser.getCredit());
+                premiumUser.setPlaylists(currentUser.getPlaylists());
+                premiumUser.setChannel(currentUser.getChannel());
+                if (currentUser.getCredit() >= subscription.getPrice()) {
+                    premiumUser.setId(currentUser.getId());
+                    DataBaseController.getUsers().remove(currentUser);
+                    DataBaseController.getUsers().add(premiumUser);
+                    currentUser = premiumUser;
+                    premiumUser.setCredit(currentUser.getCredit() - subscription.getPrice());
+                    premiumUser.setExpirationDate(LocalDate.now().plusDays(subscription.getAllowedDays()));
+                    premiumUser.setSubscriptionPack(subscription);
+                    return "Your " + subscriptionPack + " subscription is activated";
+                }
+            } else {
+                return "Not enough credit";
+            }
+        }
+        return "Premium not bought";
+    }
+
     public String buyOrExtendPremium() {
         if (currentUser == null) {
             return "Login first";
         }
         if (currentUser instanceof PremiumUser) {
-            if (currentUser.getCredit() >= SubscriptionPack.Gold.getPrice()) {
-                currentUser.setCredit(currentUser.getCredit() - SubscriptionPack.Gold.getPrice());
-                ((PremiumUser) currentUser).setExpirationDate(((PremiumUser) currentUser).getExpirationDate().plusDays(SubscriptionPack.Gold.getAllowedDays()));
-                ((PremiumUser) currentUser).setSubscriptionPack(SubscriptionPack.Gold);
+            if (currentUser.getCredit() >= SubscriptionPack.GOLD.getPrice()) {
+                currentUser.setCredit(currentUser.getCredit() - SubscriptionPack.GOLD.getPrice());
+                ((PremiumUser) currentUser).setExpirationDate(((PremiumUser) currentUser).getExpirationDate().plusDays(SubscriptionPack.GOLD.getAllowedDays()));
+                ((PremiumUser) currentUser).setSubscriptionPack(SubscriptionPack.GOLD);
                 return "Your Gold subscription is activated";
-            } else if (currentUser.getCredit() >= SubscriptionPack.Silver.getPrice()) {
-                currentUser.setCredit(currentUser.getCredit() - SubscriptionPack.Silver.getPrice());
-                ((PremiumUser) currentUser).setExpirationDate(((PremiumUser) currentUser).getExpirationDate().plusDays(SubscriptionPack.Silver.getAllowedDays()));
-                ((PremiumUser) currentUser).setSubscriptionPack(SubscriptionPack.Silver);
+            } else if (currentUser.getCredit() >= SubscriptionPack.SILVER.getPrice()) {
+                currentUser.setCredit(currentUser.getCredit() - SubscriptionPack.SILVER.getPrice());
+                ((PremiumUser) currentUser).setExpirationDate(((PremiumUser) currentUser).getExpirationDate().plusDays(SubscriptionPack.SILVER.getAllowedDays()));
+                ((PremiumUser) currentUser).setSubscriptionPack(SubscriptionPack.SILVER);
                 return "Your Silver subscription is activated";
-            } else if (currentUser.getCredit() >= SubscriptionPack.Bronze.getPrice()) {
-                currentUser.setCredit(currentUser.getCredit() - SubscriptionPack.Bronze.getPrice());
-                ((PremiumUser) currentUser).setExpirationDate(((PremiumUser) currentUser).getExpirationDate().plusDays(SubscriptionPack.Bronze.getAllowedDays()));
-                ((PremiumUser) currentUser).setSubscriptionPack(SubscriptionPack.Bronze);
+            } else if (currentUser.getCredit() >= SubscriptionPack.BRONZE.getPrice()) {
+                currentUser.setCredit(currentUser.getCredit() - SubscriptionPack.BRONZE.getPrice());
+                ((PremiumUser) currentUser).setExpirationDate(((PremiumUser) currentUser).getExpirationDate().plusDays(SubscriptionPack.BRONZE.getAllowedDays()));
+                ((PremiumUser) currentUser).setSubscriptionPack(SubscriptionPack.BRONZE);
                 return "Your Bronze subscription is activated";
             } else {
                 return "You don't have enough credit";
             }
         } else if (currentUser instanceof NormalUser) {
-            if (currentUser.getCredit() >= SubscriptionPack.Bronze.getPrice()) {
-                PremiumUser premiumUser = new PremiumUser(currentUser.getUserName(), currentUser.getPassword(), currentUser.getName(), currentUser.getEmail(), currentUser.getPhoneNumber(), currentUser.getLikedCategory());
+            if (currentUser.getCredit() >= SubscriptionPack.BRONZE.getPrice()) {
+                PremiumUser premiumUser = new PremiumUser(currentUser.getUserName(), currentUser.getPassword(), currentUser.getName(), currentUser.getEmail(), currentUser.getPhoneNumber(), currentUser.getCover(), currentUser.getLikedCategory());
                 premiumUser.setCredit(currentUser.getCredit());
                 premiumUser.setPlaylists(currentUser.getPlaylists());
                 premiumUser.setChannel(currentUser.getChannel());
-                if (currentUser.getCredit() >= SubscriptionPack.Gold.getPrice()) {
-                    premiumUser.setExpirationDate(LocalDate.now().plusDays(SubscriptionPack.Gold.getAllowedDays()));
-                    premiumUser.setSubscriptionPack(SubscriptionPack.Gold);
+                if (currentUser.getCredit() >= SubscriptionPack.GOLD.getPrice()) {
+                    premiumUser.setExpirationDate(LocalDate.now().plusDays(SubscriptionPack.GOLD.getAllowedDays()));
+                    premiumUser.setSubscriptionPack(SubscriptionPack.GOLD);
                     return "Your Gold subscription is activated";
-                } else if (currentUser.getCredit() >= SubscriptionPack.Silver.getPrice()) {
-                    premiumUser.setExpirationDate(LocalDate.now().plusMonths(SubscriptionPack.Silver.getAllowedDays()));
-                    premiumUser.setSubscriptionPack(SubscriptionPack.Silver);
+                } else if (currentUser.getCredit() >= SubscriptionPack.SILVER.getPrice()) {
+                    premiumUser.setExpirationDate(LocalDate.now().plusMonths(SubscriptionPack.SILVER.getAllowedDays()));
+                    premiumUser.setSubscriptionPack(SubscriptionPack.SILVER);
                     return "Your Silver subscription is activated";
-                } else if (currentUser.getCredit() >= SubscriptionPack.Bronze.getPrice()) {
-                    premiumUser.setExpirationDate(LocalDate.now().plusDays(SubscriptionPack.Bronze.getAllowedDays()));
-                    premiumUser.setSubscriptionPack(SubscriptionPack.Bronze);
+                } else if (currentUser.getCredit() >= SubscriptionPack.BRONZE.getPrice()) {
+                    premiumUser.setExpirationDate(LocalDate.now().plusDays(SubscriptionPack.BRONZE.getAllowedDays()));
+                    premiumUser.setSubscriptionPack(SubscriptionPack.BRONZE);
                     return "Your Bronze subscription is activated";
                 }
             } else {
@@ -232,10 +281,28 @@ public class UserController {
         return result;
     }
 
-    public String showLikedCategory() {
+    public String showSubscription() {
+        if (currentUser == null) {
+            return "Login first";
+        }
         StringBuilder result = new StringBuilder();
-        for (Category category : likedCategory) {
-            result.append(category.toString() + "\n");
+        for (Channel channel : currentUser.getSubscriptions()) {
+            result.append(channel.getChannelName() + "\n");
+        }
+        return result.toString();
+    }
+
+    public String showLikedCategory() {
+        if (currentUser == null) {
+            return "Login first";
+        }
+        StringBuilder result = new StringBuilder("Liked Category : \n");
+        if (currentUser.getLikedCategory().isEmpty()) {
+            result.append("No liked category");
+        } else {
+            for (Category category : currentUser.getLikedCategory()) {
+                result.append(category.toString() + "\n");
+            }
         }
         return result.toString();
     }
@@ -306,6 +373,9 @@ public class UserController {
 
     public String showPlaylistNameAndContent() {
         StringBuilder result = new StringBuilder();
+        if (currentUser.getPlaylists().isEmpty()) {
+            return "You don't have any playlist";
+        }
         for (Playlist playlist : currentUser.getPlaylists()) {
             result.append("Playlist : ");
             result.append(playlist.getPlaylistName() + "\n");
@@ -322,16 +392,16 @@ public class UserController {
         return result.toString();
     }
 
-    public String showLikedChannel() {
-        StringBuilder result = new StringBuilder("Subscribed channel: \n");
+    public ArrayList<Channel> showLikedChannel() {
+        /*StringBuilder result = new StringBuilder("Subscribed channel: \n");
         if (currentUser.getSubscriptions().isEmpty()) {
             result.append("No sbscribed channel");
         } else {
             for (Channel channel : currentUser.getSubscriptions()) {
                 result.append(channel.getChannelName() + "\n");
             }
-        }
-        return result.toString();
+        }*/
+        return currentUser.getSubscriptions();
     }
 
     public String setComment(int contentId, String description) {
@@ -377,16 +447,16 @@ public class UserController {
             if (playlist.getContents().contains(content)) {
                 return "Content already in this playlist";
             }
-            if (content instanceof Podcast) {
-                if (playlist.getContents().size() <= playlist.getPlaylistLimit()) {
-                    playlist.getContents().add(content);
-                    return "Content added to playlist successfully.";
-                } else {
-                    return "You can't add more than 10 contents to a playlist.";
-                }
+//            if (content instanceof Podcast) {
+            if (playlist.getContents().size() <= playlist.getPlaylistLimit()) {
+                playlist.getContents().add(content);
+                return "Content added to playlist successfully.";
             } else {
-                return "You can only add podcasts to a playlist.";
+                return "You can't add more than 10 contents to a playlist.";
             }
+//            } else {
+//                return "You can only add podcasts to a playlist.";
+//            }
         }
         return "Content not added to playlist";
     }
@@ -397,5 +467,27 @@ public class UserController {
 
     public ArrayList<Integer> getWatchedContent() {
         return currentUser.getWatchedContent();
+    }
+
+    public ArrayList<User> getUsers() {
+        return DataBaseController.getUsers();
+    }
+
+    public ArrayList<Content> showPlaylistContents(int playlistId) {
+//        StringBuilder result = new StringBuilder();
+        Playlist playlist = PlaylistController.getPlaylistById(currentUser.getId(), playlistId);
+//        result.append("Contents : \n");
+//        if (playlist.getContents().isEmpty()) {
+//            result.append("No content in this playlist\n");
+//        } else {
+//            for (Content content : playlist.getContents()) {
+//                result.append(ContentController.getInstance().showContentInfo(content.getContentId()) + "\n");
+//            }
+//        }
+        return playlist.getContents();
+    }
+
+    public User getCurrentUser() {
+        return currentUser;
     }
 }
