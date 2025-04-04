@@ -13,8 +13,17 @@ public class User extends Account {
     private ArrayList<Category> likedCategory;
     private ArrayList<Integer> likedContent;
     private ArrayList<Integer> watchedContent;
-
-    public User(String userName, String password, String name, String email, String phoneNumber, ArrayList<Category> likedCategory) {
+    @Override
+    public String toString() {
+        return "UserInfo:" +
+                "\nid :" + id +
+                "\nuserName : " + userName +
+                "\nname : " + name +
+                "\nemail : " + email +
+                "\nphoneNumber : " + phoneNumber +
+                "\ncredit : " + credit;
+    }
+    public User(String userName, String password, String name, String email, String phoneNumber,String cover, ArrayList<Category> likedCategory) {
         this.id = idCounter++;
         this.userName = userName;
         this.password = password;
@@ -22,6 +31,7 @@ public class User extends Account {
         this.email = email;
         this.phoneNumber = phoneNumber;
         this.likedCategory = likedCategory;
+        this.profileCover = cover;
         DataBaseController.addUser(this);
         this.playlists = new ArrayList<>();
         this.subscriptions = new ArrayList<>();
@@ -68,7 +78,9 @@ public class User extends Account {
     public ArrayList<Channel> getSubscriptions() {
         return subscriptions;
     }
-
+    public String getCover() {
+        return profileCover;
+    }
     public void setSubscriptions(ArrayList<Channel> subscriptions) {
         this.subscriptions = subscriptions;
     }

@@ -17,6 +17,15 @@ public class Admin extends Account {
         }
         return instance;
     }
+    @Override
+    public String toString() {
+        return "AdminInfo:" +
+                "\nid :" + id +
+                "\nuserName : " + userName +
+                "\nname : " + name +
+                "\nemail : " + email +
+                "\nphoneNumber : " + phoneNumber;
+    }
 
 
 }
